@@ -234,7 +234,7 @@ class nGrams(object):
 
         return n_buffer
 
-    def build(self,lines,clean_str=u'[!"%&\'\(\)\+,‚‘’\.\/:;=?\[\]«»¡£§²´µ·¸º°…“”•„−–—]'):
+    def build(self,lines,clean_str=u'[!"%&\'\(\)\+,‚‘’\.\/:;=?\[\]«»¡£§²´µ·¸º°…“”•„−–—]',del_lines=False):
         """
             Arguments:
                 
@@ -258,7 +258,8 @@ class nGrams(object):
         t.start()
         for line in lines:
 
-            line = line.strip(u'\n')
+            line = line.lower().strip(u'\n')
+
             if clean_str:
                 line = re.sub(clean_str, ' ', line)
 
@@ -273,7 +274,8 @@ class nGrams(object):
             self.__empty_buffer(n_buffer)
                         
             t.print_update(1)
-
+            
+            del lines[0]
 
         sys.stderr.write("Sorting the %i-grams...\n" % self.__max_arity)
 
@@ -527,6 +529,9 @@ class nGrams(object):
         """
 
         return self.__ngrams[ng].values()
+
+    def __delitem__(self, ngram):
+        del self.__ngrams[len(ngram)-1][ngram]
 
     def __getitem__(self,ngram):
         if len(ngram)-1 > self.__max_arity:
